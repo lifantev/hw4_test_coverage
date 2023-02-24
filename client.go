@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -19,7 +19,7 @@ const (
 
 var (
 	errTest = errors.New("testing")
-	client  = &http.Client{Timeout: time.Second}
+	client  = &http.Client{Timeout: 2 * time.Second}
 )
 
 type User struct {
@@ -98,7 +98,7 @@ func (srv *SearchClient) FindUsers(req SearchRequest) (*SearchResponse, error) {
 		return nil, fmt.Errorf("unknown error %s", err)
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 
 	switch resp.StatusCode {
 	case http.StatusUnauthorized:
